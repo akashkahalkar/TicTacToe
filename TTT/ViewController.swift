@@ -75,9 +75,7 @@ class ViewController: UIViewController {
     
     @IBAction func okButtonClick(_ sender: Any) {
         showBoardView()
-    }
-    
-    
+    }    
     
     func createBoard() {
         let container = boardView!
@@ -122,7 +120,6 @@ class ViewController: UIViewController {
     }
     
     private func highlightButton(_ indexes: [Int]) {
-
         let buttons = indexes.map({gameStructureArray[$0]})
         UIView.animate(withDuration: 1.0, animations: {
             buttons.forEach({$0.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)})
@@ -199,7 +196,6 @@ class ViewController: UIViewController {
     }
     
     func checkIfWinner(in tempState: [String?], player: Player) -> (Bool, [Int]) {
-        //print(playersStates)
         var isWinner = false
         var winningState = [Int]()
         let winningConditions = [
