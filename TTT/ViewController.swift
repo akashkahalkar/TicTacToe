@@ -53,13 +53,26 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         createBoard()
-        turnLabel.text = "Your Turn"
+        turnLabel.text = "TTT"
+    }
+    
+    @IBAction func segmentedControlClicked(_ sender: UISegmentedControl) {
+        gameLevel = DifficultyLevel(rawValue: sender.selectedSegmentIndex) ?? .easy
+        playerOneScore = 0
+        computerScore = 0
+        resetPlayerStates()
+    }
+    
+    @IBAction func okButtonClick(_ sender: Any) {
+        showBoardView()
     }
     
     private func resetPlayerStates() {
         currentPlayer = .playerOne
         playersStates = Array(repeating: nil, count: 9)
         gameStructureArray.forEach({$0.setTitle(playersStates[$0.tag], for: .normal)})
+//        playerOneScore = 0
+//        computerScore = 0
     }
     
     private func updateBoard() {
@@ -68,16 +81,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func segmentedControlClicked(_ sender: UISegmentedControl) {
-        gameLevel = DifficultyLevel(rawValue: sender.selectedSegmentIndex) ?? .easy
-        resetPlayerStates()
-    }
-    
-    @IBAction func okButtonClick(_ sender: Any) {
-        showBoardView()
-    }    
-    
-    func createBoard() {
+    private func createBoard() {
         let container = boardView!
         let length = container.bounds.width / 3.0
         let convertedPoint = CGPoint.zero
@@ -98,7 +102,6 @@ class ViewController: UIViewController {
             }
             initialY += length
             initialX = convertedPoint.x
-            print("COUNT : ", count)
         }
         gameStructureArray.forEach({container.addSubview($0)})
     }
@@ -108,9 +111,9 @@ class ViewController: UIViewController {
             updateBoard()
             if !checkGameEnd() {
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     
-                    if self.updatePlayerStates(index: self.unbeatable()) {
+                    if self.updatePlayerStates(index: self.getWinningIndexForComputer()) {
                         self.updateBoard()
                         _ = self.checkGameEnd()
                     }
@@ -142,7 +145,7 @@ class ViewController: UIViewController {
             return true
         } else {
             if draw() {
-                showMessageView("Game draw", .draw)
+                showMessageView("Game draw.", .draw)
                 return true
             } else {
                 changePlayer()
@@ -188,10 +191,10 @@ class ViewController: UIViewController {
         switch currentPlayer {
         case .playerOne:
             currentPlayer = .computer
-            turnLabel.text = "My Turn"
+            //turnLabel.text = "My Turn"
         case .computer:
             currentPlayer = .playerOne
-            turnLabel.text = "Your Turn"
+            //turnLabel.text = "Your Turn"
         }
     }
     
@@ -224,7 +227,10 @@ class ViewController: UIViewController {
         return (isWinner, winningState)
     }
     
-    func unbeatable() -> Int {
+    /// check if computer can win in given senario
+    ///
+    /// - Returns: return winning index if available else return -1
+    func getWinningIndexForComputer() -> Int {
         
         if gameLevel.rawValue > DifficultyLevel.medium.rawValue , let playerWinningIndex = checkIfWin(player: Player.computer) {
             return playerWinningIndex
@@ -270,6 +276,7 @@ class ViewController: UIViewController {
     }
 }
 
+//MARK: - Emiiter logic
 extension ViewController {
     
     enum gameResultState: String {
