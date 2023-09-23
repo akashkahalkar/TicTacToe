@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var particleEmitter: CAEmitterLayer!
+    private var particleEmitter: CAEmitterLayer!
 
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var container: UIView!
@@ -23,7 +23,8 @@ class ViewController: UIViewController {
     private var gameStructureArray: [UIButton] = []
     private var currentPlayer = Player.playerOne
     private var playersStates: [String?] = []
-    var gameLevel = DifficultyLevel.easy
+    private var gameLevel = DifficultyLevel.easy
+    
     private var playerOneScore = 0 {
         didSet {
             playerOneScoreLabel.text = String(playerOneScore)
@@ -71,8 +72,6 @@ class ViewController: UIViewController {
         currentPlayer = .playerOne
         playersStates = Array(repeating: nil, count: 9)
         gameStructureArray.forEach({$0.setTitle(playersStates[$0.tag], for: .normal)})
-//        playerOneScore = 0
-//        computerScore = 0
     }
     
     private func updateBoard() {
@@ -132,8 +131,8 @@ class ViewController: UIViewController {
     }
     
     private func checkGameEnd() -> Bool {
-        let result = checkIfWinner(in: playersStates, player: currentPlayer)
-        if result.0 {
+        let result: (success: Bool, _) = checkIfWinner(in: playersStates, player: currentPlayer)
+        if result.success {
             incrementScore(player: currentPlayer)
             let player = currentPlayer == .playerOne ? "You" : "Computer"
             let emoji: gameResultState = currentPlayer == .playerOne ? gameResultState.win : gameResultState.lose
@@ -144,7 +143,7 @@ class ViewController: UIViewController {
             }
             return true
         } else {
-            if draw() {
+            if isGameDraw() {
                 showMessageView("Game draw.", .draw)
                 return true
             } else {
@@ -174,7 +173,7 @@ class ViewController: UIViewController {
         }
     }
     
-    private func draw() -> Bool {
+    private func isGameDraw() -> Bool {
         return playersStates.filter({$0 == nil}).isEmpty
     }
     
@@ -187,18 +186,16 @@ class ViewController: UIViewController {
         }
     }
     
-    func changePlayer() {
+    private func changePlayer() {
         switch currentPlayer {
         case .playerOne:
             currentPlayer = .computer
-            //turnLabel.text = "My Turn"
         case .computer:
             currentPlayer = .playerOne
-            //turnLabel.text = "Your Turn"
         }
     }
     
-    func checkIfWinner(in tempState: [String?], player: Player) -> (Bool, [Int]) {
+    private func checkIfWinner(in tempState: [String?], player: Player) -> (Bool, [Int]) {
         var isWinner = false
         var winningState = [Int]()
         let winningConditions = [
@@ -227,10 +224,10 @@ class ViewController: UIViewController {
         return (isWinner, winningState)
     }
     
-    /// check if computer can win in given senario
+    /// check if computer can win in given scenario
     ///
     /// - Returns: return winning index if available else return -1
-    func getWinningIndexForComputer() -> Int {
+    private func getWinningIndexForComputer() -> Int {
         
         if gameLevel.rawValue > DifficultyLevel.medium.rawValue , let playerWinningIndex = checkIfWin(player: Player.computer) {
             return playerWinningIndex
@@ -238,16 +235,14 @@ class ViewController: UIViewController {
             return computerWinningIndex
         } else {
             let secureIndexes = [4, 0, 2, 6, 8, 3, 1, 5, 7]
-            for index in secureIndexes {
-                if playersStates[index] == nil {
-                    return index
-                }
+            if let winningIndex = secureIndexes.filter({ playersStates[$0] == nil }).first {
+                return winningIndex
             }
         }
         return -1
     }
     
-    func checkIfWin(player: Player) -> Int? {
+    private func checkIfWin(player: Player) -> Int? {
         var winnignIndex: Int?
         var tempStat = playersStates
         for (index, state) in tempStat.enumerated() {
@@ -255,7 +250,6 @@ class ViewController: UIViewController {
                 tempStat[index] = player.rawValue
                 if checkIfWinner(in: tempStat, player: player).0 {
                     winnignIndex = index
-                    print("win for index: \(index)")
                     break
                 } else {
                     tempStat = playersStates
@@ -285,7 +279,7 @@ extension ViewController {
         case draw = "😬"
     }
     
-    func createParticles(type: gameResultState) {
+    private func createParticles(type: gameResultState) {
         
         particleEmitter.emitterPosition = CGPoint(x: view.center.x, y: -96)
         particleEmitter.emitterShape = .line
@@ -296,7 +290,7 @@ extension ViewController {
         view.layer.addSublayer(particleEmitter)
     }
     
-    func makeEmitterCell(type: gameResultState) -> CAEmitterCell {
+    private func makeEmitterCell(type: gameResultState) -> CAEmitterCell {
         let cell = CAEmitterCell()
         cell.birthRate = 20.0
         cell.lifetime = 2.0
@@ -316,7 +310,7 @@ extension ViewController {
         return cell
     }
     
-    func generate(string: NSAttributedString) -> UIImage? {
+    private func generate(string: NSAttributedString) -> UIImage? {
         let particleSize = CGSize(width: 30, height: 30)
         let rect = CGRect(origin: CGPoint.zero, size: particleSize)
         UIGraphicsBeginImageContext(particleSize)

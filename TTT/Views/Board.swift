@@ -19,16 +19,17 @@ import UIKit
         addCornerRadius(rect)
         drawGradient()
         drawLines(rect)
+        dropShadow(scale: true)
     }
     
-     func addCornerRadius(_ rect: CGRect) {
+    func addCornerRadius(_ rect: CGRect) {
         let path = UIBezierPath(roundedRect: rect,
                                 byRoundingCorners: .allCorners,
                                 cornerRadii: CGSize(width: 10.0, height: 10.0))
         path.addClip()
     }
     
-     func drawGradient() {
+    func drawGradient() {
         let context = UIGraphicsGetCurrentContext()!
         let colors = [startColor.cgColor, endColor.cgColor] as CFArray
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -58,5 +59,18 @@ import UIKit
         UIColor.white.withAlphaComponent(0.7).setStroke()
         line.stroke()
     }
+    
+    func dropShadow(scale: Bool = true) {
+        layer.masksToBounds = false
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.5
+        layer.shadowOffset = CGSize(width: -2, height: 2)
+        layer.shadowRadius = 10
+        
+        layer.shadowPath = UIBezierPath(rect: bounds).cgPath
+        layer.shouldRasterize = true
+        layer.rasterizationScale = scale ? UIScreen.main.scale : 1
+    }
+    
 }
 
