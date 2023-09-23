@@ -14,5 +14,6 @@ import UIKit
     override func draw(_ rect: CGRect) {
         addCornerRadius(rect)
         drawGradient()
+        dropShadow(scale: true)
     }
 }
