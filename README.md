@@ -1,4 +1,4 @@
-# TicTacToe
+# TicTacToe [![Build](https://github.com/akashkahalkar/TicTacToe/actions/workflows/build.yml/badge.svg)](https://github.com/akashkahalkar/TicTacToe/actions/workflows/build.yml)
 
 A simple TicTacToe IOS Application Implemented in swift 5
 
