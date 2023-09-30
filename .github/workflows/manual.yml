@@ -1,0 +1,12 @@
+name: Build manual
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Start xcodebuild test
+      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform:iOS Simulator, id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder, name:Any iOS Simulator Device"
