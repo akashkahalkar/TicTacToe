@@ -13,4 +13,4 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Start xcodebuild test
-      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform=iOS Simulator,name=iPhone 13"
+      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform=iOS Simulator,name=iPhone 11 pro"
