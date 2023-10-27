@@ -13,5 +13,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@master
+    - name: List Available Simulators
+      run: xcrun simctl list devices
     - name: Start xcodebuild test
-      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform=iOS Simulator,name=iPhone 14"
+      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform=iOS Simulator,name=iPhone 13"
