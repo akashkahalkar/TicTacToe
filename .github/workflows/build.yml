@@ -5,6 +5,7 @@ on:
     branches:
       - master
 
+
 jobs:
   build:
 
@@ -13,4 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Start xcodebuild test
-      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform:iOS Simulator, id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder, name:Any iOS Simulator Device"
+      run: xcodebuild clean build -project TTT.xcodeproj -scheme TTT -destination "platform=iOS Simulator,name=iPhone 15 pro"
